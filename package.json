@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "axios": "^1.6.0",
-    "dingtalk-stream": "file:../../../dingtalk-stream-sdk-nodejs",
+    "dingtalk-stream": "git+https://github.com/soimy/dingtalk-stream-sdk-nodejs.git",
     "form-data": "^4.0.0",
     "zod": "^4.3.6"
   },
