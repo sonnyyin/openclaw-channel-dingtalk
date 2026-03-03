@@ -189,6 +189,34 @@ export async function getMp3DurationSeconds(filePath: string, log?: Logger): Pro
   }
 }
 
+const DEFAULT_VOICE_DURATION_MS = 1000;
+
+export async function getVoiceDurationMs(
+  filePath: string,
+  mediaType: DingTalkMediaType | DingTalkOutboundMediaType,
+  log?: Logger,
+): Promise<number> {
+  if (mediaType !== "voice") {
+    return DEFAULT_VOICE_DURATION_MS;
+  }
+
+  const ext = path.extname(filePath).toLowerCase();
+
+  if (ext === ".mp3") {
+    const durationSec = await getMp3DurationSeconds(filePath, log);
+    if (durationSec > 0) {
+      return Math.max(1, Math.round(durationSec * 1000));
+    }
+
+    log?.warn?.(
+      `[DingTalk] MP3 duration parse returned ${durationSec} for ${filePath}; using fallback ${DEFAULT_VOICE_DURATION_MS}ms`,
+    );
+    return DEFAULT_VOICE_DURATION_MS;
+  }
+
+  return DEFAULT_VOICE_DURATION_MS;
+}
+
 
 export type DingTalkMediaType = "image" | "voice" | "video" | "file";
 export type DingTalkOutboundMediaType = DingTalkMediaType;
