@@ -95,20 +95,26 @@ export async function getMp3DurationSeconds(filePath: string, log?: Logger): Pro
 
         // MPEG version
         let mpegVersion: "1" | "2" | "2.5";
-        if (versionBits === 0) mpegVersion = "2.5";
-        else if (versionBits === 2) mpegVersion = "2";
-        else if (versionBits === 3) mpegVersion = "1";
-        else {
+        if (versionBits === 0) {
+          mpegVersion = "2.5";
+        } else if (versionBits === 2) {
+          mpegVersion = "2";
+        } else if (versionBits === 3) {
+          mpegVersion = "1";
+        } else {
           offset++;
           continue; // reserved
         }
 
         // Layer
         let layer: 1 | 2 | 3;
-        if (layerBits === 1) layer = 3;       // Layer III
-        else if (layerBits === 2) layer = 2;  // Layer II
-        else if (layerBits === 3) layer = 1;  // Layer I
-        else {
+        if (layerBits === 1) {
+          layer = 3; // Layer III
+        } else if (layerBits === 2) {
+          layer = 2; // Layer II
+        } else if (layerBits === 3) {
+          layer = 1; // Layer I
+        } else {
           offset++;
           continue;
         }
@@ -122,9 +128,13 @@ export async function getMp3DurationSeconds(filePath: string, log?: Logger): Pro
         // bitrate tables use group: MPEG1 vs MPEG2/2.5
         const brGroup: "1" | "2" = mpegVersion === "1" ? "1" : "2";
         let bitrateKbps = 0;
-        if (layer === 1) bitrateKbps = bitratesLayer1[brGroup][bitrateIndex] || 0;
-        else if (layer === 2) bitrateKbps = bitratesLayer2[brGroup][bitrateIndex] || 0;
-        else bitrateKbps = bitratesLayer3[brGroup][bitrateIndex] || 0;
+        if (layer === 1) {
+          bitrateKbps = bitratesLayer1[brGroup][bitrateIndex] || 0;
+        } else if (layer === 2) {
+          bitrateKbps = bitratesLayer2[brGroup][bitrateIndex] || 0;
+        } else {
+          bitrateKbps = bitratesLayer3[brGroup][bitrateIndex] || 0;
+        }
 
         if (!bitrateKbps) {
           offset++;
@@ -133,9 +143,13 @@ export async function getMp3DurationSeconds(filePath: string, log?: Logger): Pro
 
         // samples per frame
         let samplesPerFrame: number;
-        if (layer === 1) samplesPerFrame = 384;
-        else if (layer === 2) samplesPerFrame = 1152;
-        else samplesPerFrame = mpegVersion === "1" ? 1152 : 576; // Layer III
+        if (layer === 1) {
+          samplesPerFrame = 384;
+        } else if (layer === 2) {
+          samplesPerFrame = 1152;
+        } else {
+          samplesPerFrame = mpegVersion === "1" ? 1152 : 576; // Layer III
+        }
 
         // frame size
         let frameSize = 0;
