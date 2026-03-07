@@ -267,7 +267,10 @@ export async function downloadGroupFile(
                 });
             } catch (retryErr: unknown) {
                 const host = resourceUrl ? new URL(resourceUrl).host : "(unknown-host)";
-                throw new Error(`download-resource failed host=${host} detail=${describeResolveError(retryErr)}`);
+                throw new Error(
+                    `download-resource failed host=${host} detail=${describeResolveError(retryErr)}`,
+                    { cause: retryErr },
+                );
             }
         }
 
@@ -283,7 +286,10 @@ export async function downloadGroupFile(
 
             return { path: saved.path, mimeType: saved.contentType ?? contentType };
         } catch (err: unknown) {
-            throw new Error(`save-buffer failed contentType=${contentType} detail=${describeResolveError(err)}`);
+            throw new Error(
+                `save-buffer failed contentType=${contentType} detail=${describeResolveError(err)}`,
+                { cause: err },
+            );
         }
     } catch (err: unknown) {
         if (axios.isAxiosError(err) && err.response?.data !== undefined) {
